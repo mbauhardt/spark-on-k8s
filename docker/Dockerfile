@@ -1,10 +1,10 @@
-FROM openjdk:8-alpine
+FROM java:openjdk-8-jdk
 
 ENV spark_ver 2.3.1
 
 RUN set -ex && \
-    apk upgrade --no-cache && \
-    apk add --no-cache bash tini libc6-compat curl
+    apt-get update && \
+    apt-get install bash curl
 
 # Get Spark from US Apache mirror.
 RUN mkdir -p /opt && \
