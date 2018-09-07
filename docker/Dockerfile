@@ -1,6 +1,10 @@
-FROM java:openjdk-8-jdk
+FROM openjdk:8-alpine
 
 ENV spark_ver 2.3.1
+
+RUN set -ex && \
+    apk upgrade --no-cache && \
+    apk add --no-cache bash tini libc6-compat curl
 
 # Get Spark from US Apache mirror.
 RUN mkdir -p /opt && \
@@ -11,7 +15,8 @@ RUN mkdir -p /opt && \
     echo Spark ${spark_ver} installed in /opt
 
 
-ADD start-worker.sh start-master.sh /
+ADD spark-example_2.11-0.1.jar entrypoint.sh start-worker.sh start-master.sh /
 RUN chmod +x /start-master.sh /start-worker.sh
+ENV SPARK_HOME /opt/spark
 ENV PATH $PATH:/opt/spark/bin
-
+ENTRYPOINT [ "/entrypoint.sh" ]
